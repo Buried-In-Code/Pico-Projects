@@ -63,7 +63,7 @@ ignore-variadic-names = true
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-extra-standard-library = ["machine", "network", "ntptime", "ujson", "utime"]
+extra-standard-library = ["framebuf", "machine", "network", "ntptime", "ujson", "utime"]
 known-local-folder = ["config", "utils"]
 known-third-party = ["dht", "urequests"]
 split-on-trailing-comma = false

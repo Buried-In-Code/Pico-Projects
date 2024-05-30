@@ -15,6 +15,12 @@ try:
     freyr_sensor = FreyrSensor()
 except ImportError:
     freyr_sensor = None
+try:
+    from freyr_screen import FreyrScreen
+
+    freyr_screen = FreyrScreen()
+except ImportError:
+    freyr_screen = None
 
 
 def connect_to_wifi() -> None:
@@ -49,15 +55,20 @@ def main() -> None:
     set_time()
 
     print(f"FreyrSensor enabled: {freyr_sensor is not None}")
-    if not freyr_sensor:
+    print(f"FreyrScreen enabled: {freyr_screen is not None}")
+    if not freyr_sensor and not freyr_screen:
         return
 
     while True:
-        if freyr_sensor:
-            freyr_sensor.update()
+        if freyr_screen:
+            freyr_screen.update()
 
-        print("Waiting 5min...")
-        sleep_min(value=5)
+        for _ in range(6):
+            if freyr_sensor:
+                freyr_sensor.update()
+
+            print("Waiting 5min...")
+            sleep_min(value=5)
 
 
 main()
