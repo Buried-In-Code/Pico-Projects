@@ -1,0 +1,85 @@
+[project]
+authors = [
+  {email = "BuriedInCode@tuta.io", name = "BuriedInCode"}
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux"
+]
+dependencies = []
+description = ""
+dynamic = []
+keywords = []
+license = {text = "MIT"}
+name = "Pico-Projects"
+readme = "README.md"
+version = "0.1.0"
+
+[tool.ruff]
+fix = true
+line-length = 100
+output-format = "grouped"
+show-fixes = true
+unsafe-fixes = true
+
+[tool.ruff.format]
+docstring-code-format = true
+exclude = ["config.py"]
+line-ending = "native"
+skip-magic-trailing-comma = true
+
+[tool.ruff.lint]
+exclude = ["config.py"]
+ignore = [
+  "ANN101",
+  "ANN102",
+  "COM812",
+  "D",
+  "FA",
+  "FBT",
+  "INP001",
+  "PERF203",
+  "PLR2004",
+  "PTH",
+  "SIM105",
+  "T",
+  "TRY300"
+]
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+mypy-init-return = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+extra-standard-library = ["machine", "network", "ntptime", "ujson", "utime"]
+known-local-folder = ["config", "utils"]
+known-third-party = ["dht", "urequests"]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["classmethod"]
+
+[tool.ruff.lint.per-file-ignores]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.rye]
+dev-dependencies = [
+  "pre-commit >= 3.7.1"
+]
