@@ -27,7 +27,7 @@ class FreyrSensor:
     @classmethod
     def load_state(cls) -> int:
         try:
-            with open("freyr-sensor_state.json") as stream:
+            with open("state.json") as stream:
                 data = ujson.load(stream)
                 return data["device_id"]
         except OSError as err:
@@ -36,7 +36,7 @@ class FreyrSensor:
 
     def save_state(self) -> None:
         try:
-            with open("freyr-sensor_state.json", "w") as stream:
+            with open("state.json", "w") as stream:
                 ujson.dump({"device_id": self.device_id}, stream)
         except OSError as err:
             print("Error saving state:", err)
