@@ -39,14 +39,18 @@ ignore = [
   "ANN102",
   "COM812",
   "D",
+  "EM102",
   "FA",
   "FBT",
   "INP001",
   "PERF203",
   "PLR2004",
+  "PLW2901",
   "PTH",
+  "RUF013",
   "SIM105",
   "T",
+  "TRY003",
   "TRY300"
 ]
 select = ["ALL"]
@@ -63,8 +67,8 @@ ignore-variadic-names = true
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
-extra-standard-library = ["machine", "network", "ntptime", "ujson", "utime"]
-known-local-folder = ["config", "utils"]
+extra-standard-library = ["framebuf", "machine", "network", "ntptime", "ucollections", "ujson", "utime"]
+known-local-folder = ["config", "freyr_screen", "freyr_sensor", "utils"]
 known-third-party = ["dht", "urequests"]
 split-on-trailing-comma = false
 

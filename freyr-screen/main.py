@@ -1,20 +1,13 @@
 import gc
 import ntptime
-from machine import WDT
 from network import STA_IF, WLAN
 from utime import sleep
 
 from config import password, ssid
+from freyr_screen import FreyrScreen
 
 wlan = WLAN(STA_IF)
-watchdog = WDT(timeout=8000)  # 8 Seconds
-
-try:
-    from freyr_sensor import FreyrSensor
-
-    freyr_sensor = FreyrSensor()
-except ImportError:
-    freyr_sensor = None
+# watchdog = WDT(timeout=8388)  # noqa: ERA001
 
 
 def connect_to_wifi() -> None:
@@ -40,24 +33,16 @@ def sleep_min(value: int = 1) -> None:
     for _ in range(value):
         for _ in range(12):
             gc.collect()
-            watchdog.feed()
+            # watchdog.feed()  # noqa: ERA001
             sleep(5)
 
 
-def main() -> None:
-    connect_to_wifi()
-    set_time()
+connect_to_wifi()
+set_time()
+freyr_screen = FreyrScreen()
 
-    print(f"FreyrSensor enabled: {freyr_sensor is not None}")
-    if not freyr_sensor:
-        return
+while True:
+    freyr_screen.update()
 
-    while True:
-        if freyr_sensor:
-            freyr_sensor.update()
-
-        print("Waiting 5min...")
-        sleep_min(value=5)
-
-
-main()
+    print("Waiting 15min...")
+    sleep_min(value=15)
