@@ -63,28 +63,26 @@ class FreyrScreen:
     def save_state(self) -> None:
         try:
             with open("state.json", "w") as stream:
-                ujson.dump({"devices": self.devices}, stream)
+                ujson.dump({"devices": list(self.devices)}, stream)
         except OSError as err:
             print("Error saving state:", err)
 
     def load_devices(self) -> list[tuple[int, str]]:
-        try:
-            response = urequests.get(f"{base_url}/api/devices")
-            data = response.json()
-            return [(x["id"], x["name"]) for x in data]
-        except Exception as err:  # noqa: BLE001
-            print("Unable to get devices", err)
+        response = urequests.get(f"{base_url}/api/devices")
+        if response.status_code != 200:
+            print(f"Failed to connect: {response.text}")
             return []
+        data = response.json()
+        return [(x["id"], x["name"]) for x in data]
 
-    def load_device_readings(self, device_id: int) -> tuple[str, list]:
-        try:
-            response = urequests.get(
-                f"{base_url}/api/devices/{device_id}/readings?limit={self.graph_width}"
-            )
-            return response.json()
-        except Exception as err:  # noqa: BLE001
-            print("Unable to get device readings:", err)
+    def load_device_readings(self, device_id: int) -> list[dict]:
+        response = urequests.get(
+            f"{base_url}/api/devices/{device_id}/readings?limit={self.graph_width}"
+        )
+        if response.status_code != 200:
+            print(f"Failed to connect: {response.text}")
             return []
+        return response.json()
 
     def graph(self, readings: list, key: str, offset: int = 0) -> None:
         text_start = offset + (self.graph_width + 42 - len(key) * 8) // 2, 20
