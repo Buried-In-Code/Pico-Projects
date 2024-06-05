@@ -3,42 +3,19 @@ from machine import Pin
 from ucollections import deque
 
 import urequests
-from waveshare_display import BLACK, WHITE, DisplayLandscape
+from Pico_ePaper_2_9 import EPD_2in9_Landscape
 
 from config import base_url
+from utils import datetime_to_str, parse_timestamp
 
-
-def parse_timestamp(timestamp: str) -> tuple[int, int, int, int, int, int]:
-    parts = timestamp.split("T")
-    year, month, day = map(int, parts[0].split("-"))
-    hour, minute, second = map(int, parts[1].split(":"))
-    return year, month, day, hour, minute, second
-
-
-def datetime_to_str(datetime: tuple[int, int, int, int, int, int]) -> str:
-    def zellers_congruence(year: int, month: int, day: int) -> int:
-        if month < 3:
-            month += 12
-            year -= 1
-        c = year // 100
-        year = year % 100
-        return (c // 4 - 2 * c + year + year // 4 + 13 * (month + 1) // 5 + day - 1) % 7
-
-    weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "---"]
-    weekday_name = weekdays[
-        zellers_congruence(year=datetime[0], month=datetime[1], day=datetime[2])
-    ]
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    month_name = months[datetime[1] - 1]
-    date_str = f"{weekday_name}, {datetime[2]:02d} {month_name} {datetime[0]:04d}"
-    time_str = f"{datetime[3]:02d}:{datetime[4]:02d}:{datetime[5]:02d}"
-    return f"{date_str} - {time_str}"
+BLACK: int = 0x00
+WHITE: int = 0xFF
 
 
 class FreyrScreen:
     def __init__(self) -> None:
         self.pwrLED = Pin("LED", Pin.OUT)
-        self.display = DisplayLandscape()
+        self.display = EPD_2in9_Landscape()
 
         self.devices = deque((), 10)
 
@@ -48,7 +25,8 @@ class FreyrScreen:
         self.graph_height = self.display_height - 30
 
         devices = self.load_state()
-        self.devices.extend(devices)
+        if devices:
+            self.devices.extend(devices)
 
     @classmethod
     def load_state(cls) -> int:
@@ -77,7 +55,7 @@ class FreyrScreen:
 
     def load_device_readings(self, device_id: int) -> list[dict]:
         response = urequests.get(
-            f"{base_url}/api/devices/{device_id}/readings?limit={self.graph_width}"
+            f"{base_url}/api/devices/{device_id}/readings?limit={min(self.graph_width, 100)}"
         )
         if response.status_code != 200:
             print(f"Failed to connect: {response.text}")
@@ -88,7 +66,9 @@ class FreyrScreen:
         text_start = offset + (self.graph_width + 42 - len(key) * 8) // 2, 20
         self.display.text(key, text_start[0], text_start[1], BLACK)
 
-        max_value = max([float(x[key.lower()]) for x in readings if x], default=None)
+        max_value = max(
+            [float(x[key.lower()]) for x in readings if x and x[key.lower()]], default=None
+        )
         if max_value is None:
             return
         min_value = min([float(x[key.lower()]) for x in readings if x])
@@ -118,7 +98,7 @@ class FreyrScreen:
                 device_id = -1
 
         readings = self.load_device_readings(device_id=device_id)
-        self.display.clear(WHITE)
+        self.display.Clear(WHITE)
         self.display.fill(WHITE)
 
         if not readings:
@@ -128,7 +108,7 @@ class FreyrScreen:
             self.display.text(invalid_text, center_x, center_y, BLACK)
         else:
             date_text = datetime_to_str(
-                datetime=parse_timestamp(timestamp=self.readings[1]["timestamp"])
+                datetime=parse_timestamp(timestamp=readings[1]["timestamp"])
             )
             date_start = (self.display_width - len(date_text) * 8) // 2, 1
             self.display.text(date_text, date_start[0], date_start[1], BLACK)
@@ -142,7 +122,6 @@ class FreyrScreen:
             self.graph(readings=readings, key="Humidity", offset=self.display_width // 2 + 5)
 
         self.display.display(self.display.buffer)
-        self.display.delay_ms(2000)
 
         self.pwrLED.off()
         print("Finished update of Freyr Screen")
