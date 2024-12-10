@@ -1,0 +1,9 @@
+{
+  "wifi": {
+    "ssid": "WiFi Name",
+    "password": "Password"
+  },
+  "freyr": {
+    "base_url": "http://127.0.0.1:25710"
+  }
+}

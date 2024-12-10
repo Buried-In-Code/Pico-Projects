@@ -1,16 +1,16 @@
 import gc
-import ntptime
 from network import STA_IF, WLAN
 from utime import sleep
 
-from config import password, ssid
-from freyr_screen import FreyrScreen
+from screen import Screen
+
+from utils import load_json
 
 wlan = WLAN(STA_IF)
-# watchdog = WDT(timeout=8388)  # noqa: ERA001
+# watchdog = WDT(timeout=8000)  # 8 Seconds  # noqa: ERA001
 
 
-def connect_to_wifi() -> None:
+def connect_to_wifi(ssid: str, password: str) -> None:
     wlan.active(True)
     wlan.connect(ssid, password)
     while not wlan.isconnected():
@@ -18,15 +18,6 @@ def connect_to_wifi() -> None:
         sleep(1)
     ip = wlan.ifconfig()[0]
     print(f"Connected on {ip}")
-
-
-def set_time() -> None:
-    while True:
-        try:
-            ntptime.settime()
-            return
-        except OSError as err:
-            print("Failed to set time:", err)
 
 
 def sleep_min(value: int = 1) -> None:
@@ -37,12 +28,12 @@ def sleep_min(value: int = 1) -> None:
             sleep(5)
 
 
-connect_to_wifi()
-set_time()
-freyr_screen = FreyrScreen()
+config = load_json("config.json")
+connect_to_wifi(ssid=config["wifi"]["ssid"], password=config["wifi"]["password"])
+screen = Screen(base_url=config["freyr"]["base_url"])
 
 while True:
-    freyr_screen.update()
+    screen.update()
 
     print("Waiting 15min...")
     sleep_min(value=15)

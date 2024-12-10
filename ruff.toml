@@ -6,28 +6,21 @@ unsafe-fixes = true
 
 [format]
 docstring-code-format = true
-exclude = ["config.py"]
 line-ending = "native"
 skip-magic-trailing-comma = true
 
 [lint]
-exclude = ["config.py"]
 ignore = [
   "COM812",
   "D",
-  "EM102",
-  "FA",
+  "EM",
   "FBT",
   "INP001",
-  "PERF203",
   "PLR2004",
-  "PLW2901",
-  "PTH",
+  "PTH123",
   "RUF013",
-  "SIM105",
-  "T",
-  "TRY003",
-  "TRY300"
+  "T201",
+  "TRY003"
 ]
 select = ["ALL"]
 
@@ -44,7 +37,7 @@ ignore-variadic-names = true
 [lint.isort]
 combine-as-imports = true
 extra-standard-library = ["framebuf", "machine", "network", "ntptime", "ucollections", "ujson", "utime"]
-known-local-folder = ["config", "freyr_screen", "freyr_sensor", "utils"]
+known-local-folder = ["freyr_screen", "sensor", "utils"]
 known-third-party = ["dht", "urequests"]
 split-on-trailing-comma = false
 
