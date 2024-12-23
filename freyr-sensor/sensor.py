@@ -38,40 +38,24 @@ class Sensor:
         return load_json(filename="state.json").get("device_id")
 
     def save_state(self) -> None:
-        return save_json(filename="state.json", data={"device": {"id": self.device_id}})
+        return save_json(filename="state.json", data={"device_id": self.device_id})
 
-    def _get(
-        self, endpoint: str, params: dict[str, str] = None, headers: dict[str, str] = None
-    ) -> dict:
+    def _get(self, endpoint: str, params: dict = None) -> dict:
         if params is None:
             params = {}
-        if headers is None:
-            headers = self.headers
         url = self.base_url + endpoint
         if params:
             url = f"{url}?{encode_params(params=params)}"
-        response = urequests.get(url=url, headers=headers)
+        response = urequests.get(url=url, headers=self.headers)
         if response.status_code != 200:
             raise ServiceError(f"Invalid response: {response.text}")
         return response.json()
 
-    def _post(
-        self,
-        endpoint: str,
-        params: dict[str, str] = None,
-        headers: dict[str, str] = None,
-        body: dict = None,
-    ) -> dict:
-        if params is None:
-            params = {}
-        if headers is None:
-            headers = self.headers
+    def _post(self, endpoint: str, body: dict = None) -> dict:
         if body is None:
             body = {}
         url = self.base_url + endpoint
-        if params:
-            url = f"{url}?{encode_params(params=params)}"
-        response = urequests.post(url=url, headers=headers, json=body)
+        response = urequests.post(url=url, headers=self.headers, json=body)
         if response.status_code not in (200, 201):
             raise ServiceError(f"Invalid response: {response.text}")
         return response.json()

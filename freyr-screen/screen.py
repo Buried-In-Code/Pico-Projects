@@ -40,17 +40,13 @@ class Screen:
     def save_state(self) -> None:
         return save_json("state.json", {"devices": list(self.devices)})
 
-    def _get(
-        self, endpoint: str, params: dict[str, str] = None, headers: dict[str, str] = None
-    ) -> list[dict]:
+    def _get(self, endpoint: str, params: dict = None) -> list[dict]:
         if params is None:
             params = {}
-        if headers is None:
-            headers = self.headers
         url = self.base_url + endpoint
         if params:
             url = f"{url}?{encode_params(params=params)}"
-        response = urequests.get(url=url, headers=headers)
+        response = urequests.get(url=url, headers=self.headers)
         if response.status_code != 200:
             raise ServiceError(f"Invalid response: {response.text}")
         return response.json()
