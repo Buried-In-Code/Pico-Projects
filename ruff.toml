@@ -2,6 +2,7 @@ fix = true
 line-length = 100
 output-format = "grouped"
 show-fixes = true
+target-version = "py37"
 unsafe-fixes = true
 
 [format]
@@ -14,6 +15,7 @@ ignore = [
   "COM812",
   "D",
   "EM",
+  "FA",
   "FBT",
   "INP001",
   "PLR2004",
@@ -37,7 +39,7 @@ ignore-variadic-names = true
 [lint.isort]
 combine-as-imports = true
 extra-standard-library = ["framebuf", "machine", "network", "ntptime", "ucollections", "ujson", "utime"]
-known-local-folder = ["freyr_screen", "sensor", "utils"]
+known-local-folder = ["bin_lights", "clock", "screen", "sensor", "temperature_screen", "utils"]
 known-third-party = ["dht", "urequests"]
 split-on-trailing-comma = false
 
@@ -45,6 +47,10 @@ split-on-trailing-comma = false
 classmethod-decorators = ["classmethod"]
 
 [lint.per-file-ignores]
+"bin-lights/bin_lights.py" = ["ANN205", "BLE001", "RUF012"]
+"freyr-screen/main.py" = ["ERA001"]
+"temperature-screen/clock.py" = ["BLE001"]
+"temperature-screen/temperature_screen.py" = ["PERF203", "SIM105"]
 
 [lint.pydocstyle]
 convention = "google"

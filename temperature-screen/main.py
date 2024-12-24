@@ -1,12 +1,14 @@
 import gc
+from machine import WDT
 from network import STA_IF, WLAN
 from utime import sleep
 
-from screen import Screen
+from clock import Clock
+from temperature_screen import TemperatureScreen
 from utils import load_json
 
 wlan = WLAN(STA_IF)
-# watchdog = WDT(timeout=8000)  # 8 Seconds
+watchdog = WDT(timeout=8000)  # 8 Seconds
 
 
 def connect_to_wifi(ssid: str, password: str) -> None:
@@ -23,16 +25,16 @@ def sleep_min(value: int = 1) -> None:
     for _ in range(value):
         for _ in range(12):
             gc.collect()
-            # watchdog.feed()
+            watchdog.feed()
             sleep(5)
 
 
 config = load_json("config.json")
 connect_to_wifi(ssid=config["wifi"]["ssid"], password=config["wifi"]["password"])
-screen = Screen(base_url=config["freyr"]["base_url"])
+temperature_screen = TemperatureScreen(clock=Clock(timezone=config["timezone"]))
 
 while True:
-    screen.update()
+    temperature_screen.update()
 
-    print("Waiting 15min...")
-    sleep_min(value=15)
+    print("Waiting 5min...")
+    sleep_min(value=5)

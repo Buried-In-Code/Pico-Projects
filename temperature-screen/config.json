@@ -1,0 +1,7 @@
+{
+  "wifi": {
+    "ssid": "WiFi Name",
+    "password": "Password"
+  },
+  "timezone": null,
+}

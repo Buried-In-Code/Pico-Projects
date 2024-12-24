@@ -5,6 +5,10 @@
 
 ## Projects
 
+- [Bin Lights](./bin-lights)
+
+> Visually show what bins to put out each week.
+
 - [Freyr Screen](./freyr-screen)
 
 > Pulls temperature and humidity readings from [Freyr](https://github.com/Buried-In-Code/Freyr) and displays results in graphs.
@@ -12,6 +16,10 @@
 - [Freyr Sensor](./freyr-sensor)
 
 > Collects temperature and humidity readings and sends them to [Freyr](https://github.com/Buried-In-Code/Freyr).
+
+- [Temperature Screen](./temperature-screen)
+
+> Record the temperature, humidity and pressure, and then display it on a screen.
 
 ## Socials
 
