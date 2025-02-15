@@ -5,7 +5,6 @@
   },
   "timezone": null,
   "bin-lights": {
-    "active-days": ["Wednesday", "Thursday", "Friday"],
     "brightness": 5,
     "bins": {
       "rubbish": {
@@ -24,9 +23,6 @@
         "colour": [0, 0, 255]
       }
     },
-    "bin-rotation": [
-      ["rubbish", "recycling"],
-      ["rubbish", "glass"]
-    ]
+    "data-url": "https://raw.githubusercontent.com/Buried-In-Code/BinData/main/output/Greytown.json"
   }
 }

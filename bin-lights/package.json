@@ -1,0 +1,14 @@
+{
+    "version": "1.0.0",
+    "deps": [
+        ["urequests", "latest"]
+    ],
+    "urls": [
+      ["/libs/PiicoDev_Unified.py", "github:/CoreElectronics/CE-PiicoDev-Unified/PiicoDev_Unified.py"],
+      ["/libs/PiicoDev_TMP117.py", "github:/CoreElectronics/CE-PiicoDev-TMP117-MicroPython-Module/PiicoDev_TMP117.py"],
+      ["/bin_lights.py", "github:/Buried-In-Code/Pico-Projects/bin-lights/bin_lights.py"],
+      ["/utils.py", "github:/Buried-In-Code/Pico-Projects/bin-lights/utils.py"],
+      ["/config.json", "github:/Buried-In-Code/Pico-Projects/bin-lights/config.json"],
+      ["/main.py", "github:/Buried-In-Code/Pico-Projects/bin-lights/main.py"]
+    ]
+}
