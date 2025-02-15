@@ -1,0 +1,28 @@
+{
+  "wifi": {
+    "ssid": "WiFi Name",
+    "password": "Password"
+  },
+  "timezone": null,
+  "bin-lights": {
+    "brightness": 5,
+    "bins": {
+      "rubbish": {
+        "module": 0,
+        "led": 0,
+        "colour": [255, 0, 0]
+      },
+      "recycling": {
+        "module": 0,
+        "led": 1,
+        "colour": [255, 255, 0]
+      },
+      "glass": {
+        "module": 0,
+        "led": 2,
+        "colour": [0, 0, 255]
+      }
+    },
+    "data-url": "https://raw.githubusercontent.com/Buried-In-Code/BinData/main/output/Featherston.json"
+  }
+}

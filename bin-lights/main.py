@@ -1,13 +1,22 @@
 import gc
+import ujson
 from machine import WDT
 from network import STA_IF, WLAN
 from utime import sleep
 
 from bin_lights import BinLights
-from utils import load_json
 
 wlan = WLAN(STA_IF)
 watchdog = WDT(timeout=8000)  # 8 Seconds
+
+
+def load_json(filename: str) -> dict:
+    try:
+        with open(filename) as stream:
+            return ujson.load(stream)
+    except OSError as err:
+        print(f"Unable to load '{filename}':", err)
+        return {}
 
 
 def connect_to_wifi(ssid: str, password: str) -> None:

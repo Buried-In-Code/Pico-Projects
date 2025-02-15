@@ -34,6 +34,7 @@ class TemperatureScreen:
                 pass
 
         temperature, pressure, humidity = self._sensor.values()
+        pressure = pressure / 100
         self.display_readings(readings=(temperature, humidity, pressure))
 
         for module in (self._sensor, self._display):

@@ -4,6 +4,7 @@ from machine import WDT
 from network import STA_IF, WLAN
 from utime import sleep
 
+from bin_lights import BinLights
 from clock import Clock
 from temperature_screen import TemperatureScreen
 
@@ -42,9 +43,16 @@ config = load_json("config.json")
 connect_to_wifi(ssid=config["wifi"]["ssid"], password=config["wifi"]["password"])
 clock = Clock(timezone=config["timezone"])
 temperature_screen = TemperatureScreen(clock=clock)
+bin_lights = BinLights.from_config(config=config["bin-lights"], timezone=config["timezone"])
 
+count = 0
 while True:
-    temperature_screen.update()
+    if count % 5 == 0:
+        temperature_screen.update()
+    if count % 60 == 0:
+        bin_lights.update()
+        count = -1
 
-    print("Waiting 5min...")
-    sleep_min(value=5)
+    print("Waiting 1min...")
+    sleep_min(value=1)
+    count += 1

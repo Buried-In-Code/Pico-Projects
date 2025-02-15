@@ -21,6 +21,10 @@
 
 > Record the temperature, humidity and pressure, and then display it on a screen.
 
+- [Temperature Screen & Bin Lights](./temperature-screen_bin-lights)
+
+> A merger of the Temperature Screen and Bin Lights projects
+
 ## Socials
 
 [![Social - Fosstodon](https://img.shields.io/badge/%40BuriedInCode-teal?label=Fosstodon&logo=mastodon&style=for-the-badge)](https://fosstodon.org/@BuriedInCode)\

@@ -48,7 +48,6 @@ classmethod-decorators = ["classmethod"]
 
 [lint.per-file-ignores]
 "bin-lights/bin_lights.py" = ["ANN205", "BLE001", "RUF012"]
-"bin-lights/utils.py" = ["BLE001"]
 "freyr-screen/main.py" = ["ERA001"]
 "temperature-screen/clock.py" = ["BLE001"]
 "temperature-screen/temperature_screen.py" = ["PERF203", "SIM105"]
