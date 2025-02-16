@@ -46,5 +46,5 @@ temperature_screen = TemperatureScreen(clock=clock)
 while True:
     temperature_screen.update()
 
-    print("Waiting 5min...")
-    sleep_min(value=5)
+    print("Waiting 1min...")
+    sleep_min(value=1)

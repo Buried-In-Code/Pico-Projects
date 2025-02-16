@@ -48,8 +48,8 @@ bin_lights = BinLights.from_config(config=config["bin-lights"], timezone=config[
 while True:
     bin_lights.update()
 
-    for _ in range(12):
+    for _ in range(60):
         temperature_screen.update()
 
-        print("Waiting 5min...")
-        sleep_min(value=5)
+        print("Waiting 1min...")
+        sleep_min(value=1)

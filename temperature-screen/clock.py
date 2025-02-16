@@ -1,39 +1,30 @@
 __all__ = ["Clock"]
 
-import utime
-
 import urequests
 
 
 class Clock:
     def __init__(self, timezone: str = None) -> None:
+        self.timezone = timezone
+
+    def get_datetime(self) -> tuple[int, int, int, int, int, int, int]:
         try:
-            if timezone:
-                response = urequests.get(f"http://worldtimeapi.org/api/timezone/{timezone}")
+            if self.timezone:
+                response = urequests.get(f"http://worldtimeapi.org/api/timezone/{self.timezone}")
             else:
                 response = urequests.get("http://worldtimeapi.org/api/ip")
             data = response.json()
-            datetime_str = data["datetime"]
-            utc_offset = data["utc_offset"]
-
-            year, month, day = map(int, datetime_str[:10].split("-"))
-            hour, minute, second = map(int, datetime_str[11:19].split(":"))
-            self.offset = int(utc_offset.replace(":", "."))
-
-            unix_time = utime.mktime((year, month, day, hour, minute, second, 0, 0))
-            local_time = unix_time + self.offset * 3600
-            utime.localtime(local_time)
-
-            utime.time()
         except Exception as err:
             print(err)
+        datetime_str = data["datetime"].replace(data["utc_offset"], "")
 
-    def get_datetime(self) -> tuple[int, int, int, int, int, int, int, int]:
-        return utime.gmtime(utime.time() + self.offset * 3600)
+        year, month, day = map(int, datetime_str[:10].split("-"))
+        hour, minute, second = map(int, datetime_str[11:19].split(":"))
+        return year, month, day, hour, minute, second, data["day_of_week"]
 
     def date_str(self) -> str:
-        year, month, day, _, _, _, day_of_week, _ = self.get_datetime()
-        weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        year, month, day, _, _, _, day_of_week = self.get_datetime()
+        weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
         weekday_name = weekdays[day_of_week]
         months = [
             "Jan",
@@ -53,5 +44,5 @@ class Clock:
         return f"{weekday_name}, {day:02d} {month_name} {year:04d}"
 
     def time_str(self) -> str:
-        _, _, _, hour, minute, second, _, _ = self.get_datetime()
+        _, _, _, hour, minute, second, _ = self.get_datetime()
         return f"{hour:02d}:{minute:02d}:{second:02d}"

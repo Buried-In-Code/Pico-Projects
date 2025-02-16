@@ -17,5 +17,4 @@ A project merge of [Temperature Screen](./temperature-screen) and [Bin Lights](.
 
 1. Download and load the [Micropython uf2](https://www.raspberrypi.com/documentation/microcontrollers/micropython.html) onto your Pico.
 2. Install [mpremote](https://pypi.org/project/mpremote/).
-3. Install project: `mpremote mip install package.json`
-4. Update the `config.json` file with your settings.
+3. Run installer: `./install.sh`

@@ -62,7 +62,7 @@ class BinLights:
             for _ in range(max(x["module"] for x in config["bins"].values()) + 1)
         ]
         return BinLights(
-            bins={k: Bin.from_config(config=v) for k, v in config["bins"]},
+            bins={k: Bin.from_config(config=v) for k, v in config["bins"].items()},
             data_url=config["data-url"],
             timezone=timezone,
         )
@@ -80,7 +80,7 @@ class BinLights:
         [self.bins[x].turn_on() for x in bins]
 
     def disable_lights(self) -> None:
-        [x.turn_off() for x in self.bins]
+        [v.turn_off() for _, v in self.bins.items()]
 
     def update(self) -> None:
         print("Starting update of BinLights")
