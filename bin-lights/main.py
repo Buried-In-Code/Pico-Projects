@@ -1,12 +1,15 @@
 import gc
 import ujson
-from machine import WDT
+from machine import RTC, WDT
 from network import STA_IF, WLAN
 from utime import sleep
+
+import urequests
 
 from bin_lights import BinLights
 
 wlan = WLAN(STA_IF)
+rtc = RTC()
 watchdog = WDT(timeout=8000)  # 8 Seconds
 
 
@@ -29,6 +32,23 @@ def connect_to_wifi(ssid: str, password: str) -> None:
     print(f"Connected on {ip}")
 
 
+def set_time(timezone: str = None) -> None:
+    try:
+        if timezone:
+            response = urequests.get(f"http://worldtimeapi.org/api/timezone/{timezone}")
+        else:
+            response = urequests.get("http://worldtimeapi.org/api/ip")
+        data = response.json()
+    except Exception as err:
+        print(err)
+        return
+    datetime_str = data["datetime"].replace(data["utc_offset"], "")
+
+    year, month, day = map(int, datetime_str[:10].split("-"))
+    hour, minute, second = map(int, datetime_str[11:19].split(":"))
+    rtc.datetime((year, month, day, data["day_of_week"], hour, minute, second, 0))
+
+
 def sleep_min(value: int = 1) -> None:
     for _ in range(value):
         for _ in range(12):
@@ -39,7 +59,12 @@ def sleep_min(value: int = 1) -> None:
 
 config = load_json("config.json")
 connect_to_wifi(ssid=config["wifi"]["ssid"], password=config["wifi"]["password"])
-bin_lights = BinLights.from_config(config=config["bin-lights"], timezone=config["timezone"])
+print(f"Before: {rtc.datetime()}")
+set_time(timezone=config["timezone"])
+print(f"After: {rtc.datetime()}")
+bin_lights = BinLights.from_config(config=config["bin-lights"], rtc=rtc)
+
+watchdog.feed()
 
 while True:
     bin_lights.update()

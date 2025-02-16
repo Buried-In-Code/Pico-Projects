@@ -1,6 +1,7 @@
 __all__ = ["BinLights"]
 
 import utime
+from machine import RTC
 
 import urequests
 from PiicoDev_RGB import PiicoDev_RGB
@@ -27,36 +28,23 @@ class Bin:
         self.modules[self._module].show()
 
 
-def get_current_date(timezone: str = None) -> str:
-    try:
-        if timezone:
-            response = urequests.get(f"http://worldtimeapi.org/api/timezone/{timezone}")
-        else:
-            response = urequests.get("http://worldtimeapi.org/api/ip")
-        data = response.json()
-        return data.get("datetime").split("T")[0]
-    except Exception as err:
-        print("Error fetching current date:", err)
-        return None
+def get_tomorrow_date(rtc: RTC) -> str:
+    year, month, day, _, _, _, _, _ = rtc.datetime()
 
+    timestamp = utime.mktime((year, month, day, 0, 0, 0, 0, 0, -1)) + 86400
+    tomorrow_tuple = utime.localtime(timestamp)
 
-def increment_date(date_str: str) -> str:
-    year, month, day = map(int, date_str.split("-"))
-    time_tuple = (year, month, day, 0, 0, 0, 0, 0, -1)
-    timestamp = utime.mktime(time_tuple)
-    timestamp += 86400
-    new_time_tuple = utime.localtime(timestamp)
-    return f"{new_time_tuple[0]:04d}-{new_time_tuple[1]:02d}-{new_time_tuple[2]:02d}"
+    return f"{tomorrow_tuple[0]:04d}-{tomorrow_tuple[1]:02d}-{tomorrow_tuple[2]:02d}"
 
 
 class BinLights:
-    def __init__(self, bins: dict[str, Bin], data_url: str, timezone: str = None):
+    def __init__(self, bins: dict[str, Bin], data_url: str, rtc: RTC):
         self.bins = bins
         self.data_url = data_url
-        self.timezone = timezone
+        self._rtc = rtc
 
     @staticmethod
-    def from_config(config: dict, timezone: str = None):
+    def from_config(config: dict, rtc: RTC):
         Bin.modules = [
             PiicoDev_RGB(bright=config["brightness"])
             for _ in range(max(x["module"] for x in config["bins"].values()) + 1)
@@ -64,7 +52,7 @@ class BinLights:
         return BinLights(
             bins={k: Bin.from_config(config=v) for k, v in config["bins"].items()},
             data_url=config["data-url"],
-            timezone=timezone,
+            rtc=rtc,
         )
 
     def download_bin_data(self) -> dict[str, list[str]]:
@@ -88,8 +76,9 @@ class BinLights:
             module.pwrLED(True)
 
         bin_data = self.download_bin_data()
-        today_str = get_current_date(timezone=self.timezone)
-        tomorrow_str = increment_date(date_str=today_str)
+        today = self._rtc.datetime()
+        today_str = f"{today[0]:04d}-{today[1]:02d}-{today[2]:02d}"
+        tomorrow_str = get_tomorrow_date(rtc=self._rtc)
 
         if today_str in bin_data:
             self.enable_lights(bins=bin_data[today_str])

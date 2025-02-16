@@ -47,10 +47,12 @@ split-on-trailing-comma = false
 classmethod-decorators = ["classmethod"]
 
 [lint.per-file-ignores]
+"bin-lights/main.py" = ["BLE001"]
 "bin-lights/bin_lights.py" = ["ANN205", "BLE001", "RUF012"]
 "freyr-screen/main.py" = ["ERA001"]
-"temperature-screen/clock.py" = ["BLE001"]
+"temperature-screen/main.py" = ["BLE001"]
 "temperature-screen/temperature_screen.py" = ["PERF203", "SIM105"]
+"temperature-screen_bin-lights/main.py" = ["BLE001"]
 
 [lint.pydocstyle]
 convention = "google"
