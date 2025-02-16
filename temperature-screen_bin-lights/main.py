@@ -45,14 +45,11 @@ clock = Clock(timezone=config["timezone"])
 temperature_screen = TemperatureScreen(clock=clock)
 bin_lights = BinLights.from_config(config=config["bin-lights"], timezone=config["timezone"])
 
-count = 0
 while True:
-    if count % 5 == 0:
-        temperature_screen.update()
-    if count % 60 == 0:
-        bin_lights.update()
-        count = -1
+    bin_lights.update()
 
-    print("Waiting 1min...")
-    sleep_min(value=1)
-    count += 1
+    for _ in range(12):
+        temperature_screen.update()
+
+        print("Waiting 5min...")
+        sleep_min(value=5)
